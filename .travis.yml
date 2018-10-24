@@ -1,0 +1,9 @@
+language: go
+
+go:
+  - "1.10"
+
+script:
+  - curl -L https://git.io/vp6lP | sh
+  - gometalinter --vendor --enable=errcheck --enable=vet --enable=deadcode ./...
+  - go test ./...
