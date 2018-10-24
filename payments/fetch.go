@@ -15,5 +15,8 @@ func Fetch(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadGateway)
 		return
 	}
-	w.Write(j)
+	_, err = w.Write(j)
+	if err != nil {
+		w.WriteHeader(http.StatusBadGateway)
+	}
 }
