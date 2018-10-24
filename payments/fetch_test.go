@@ -22,5 +22,5 @@ func TestFetch(t *testing.T) {
 	}
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Equal(t, "{\"data\":{}}", string(body))
+	assert.Contains(t, string(body), "{\"data\":")
 }
