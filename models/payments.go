@@ -70,7 +70,7 @@ type SponsorParty struct {
 	BankIDCode    string `json:"bank_id_code" db:"bank_id_code"`
 }
 
-// Detail holds the detail about the payment
+// Attributes holds the detail about the payment
 type Attributes struct {
 	gorm.Model
 	Amount               string `json:"amount"`
