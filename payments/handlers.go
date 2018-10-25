@@ -87,3 +87,27 @@ func Create(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusCreated)
 	}
 }
+
+// Update a payment resource
+func Update(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		requestBody, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		var p models.Payment
+		err = json.Unmarshal(requestBody, &p)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		vars := mux.Vars(r)
+		err = sql.Update(db, vars["id"], &p)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		w.WriteHeader(http.StatusCreated)
+	}
+}

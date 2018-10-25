@@ -29,6 +29,7 @@ func main() {
 	s.HandleFunc("/", payments.List(db)).Methods("GET")
 	s.HandleFunc("/", payments.Create(db)).Methods("POST")
 	s.HandleFunc("/{id}", payments.Fetch(db)).Methods("GET")
+	s.HandleFunc("/{id}", payments.Update(db)).Methods("PUT")
 	s.HandleFunc("/{id}", payments.Delete(db)).Methods("DELETE")
-	log.Fatal(http.ListenAndServe(":8081", r))
+	log.Fatal(http.ListenAndServe(":8080", r))
 }

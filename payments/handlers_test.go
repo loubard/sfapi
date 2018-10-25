@@ -164,3 +164,71 @@ func TestCreateInvalid(t *testing.T) {
 	resp := w.Result()
 	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 }
+
+func TestUpdate(t *testing.T) {
+	db, err := gorm.Open("sqlite3", ":memory:")
+	assert.NoError(t, err)
+	sql.Seed(db)
+
+	json := `{"payment_id":"43","attributes":{"amount":"100"}}`
+
+	req := httptest.NewRequest(
+		"PUT",
+		"http://example.com/v1/payments/4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43",
+		strings.NewReader(json),
+	)
+	w := httptest.NewRecorder()
+
+	router := mux.NewRouter()
+	router.HandleFunc("/v1/payments/{id}", Update(db))
+	router.ServeHTTP(w, req)
+
+	resp := w.Result()
+	assert.Equal(t, http.StatusCreated, resp.StatusCode)
+	p := &models.Payment{}
+
+	db.Where("payments.payment = ?", "43").First(&p)
+	assert.Equal(t, "43", p.Payment)
+}
+
+func TestUpdateNotFound(t *testing.T) {
+	db, err := gorm.Open("sqlite3", ":memory:")
+	assert.NoError(t, err)
+	sql.Seed(db)
+
+	json := `{"payment_id":"42","attributes":{"amount":"100"}}`
+
+	req := httptest.NewRequest(
+		"PUT",
+		"http://example.com/v1/payments/42",
+		strings.NewReader(json),
+	)
+	w := httptest.NewRecorder()
+
+	router := mux.NewRouter()
+	router.HandleFunc("/v1/payments/{id}", Update(db))
+	router.ServeHTTP(w, req)
+
+	resp := w.Result()
+	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+}
+
+func TestUpdateBadJSON(t *testing.T) {
+	db, err := gorm.Open("sqlite3", ":memory:")
+	assert.NoError(t, err)
+	json := `{`
+
+	req := httptest.NewRequest(
+		"PUT",
+		"http://example.com/v1/payments/42",
+		strings.NewReader(json),
+	)
+	w := httptest.NewRecorder()
+
+	router := mux.NewRouter()
+	router.HandleFunc("/v1/payments/{id}", Update(db))
+	router.ServeHTTP(w, req)
+
+	resp := w.Result()
+	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+}

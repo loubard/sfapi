@@ -43,3 +43,16 @@ func Create(db *gorm.DB, p *models.Payment) error {
 	}
 	return nil
 }
+
+// Update a payment resource
+func Update(db *gorm.DB, pID string, pUpdate *models.Payment) error {
+	p, err := GetByID(db, pID)
+	if err != nil {
+		return errors.New("Can't find record")
+	}
+	result := db.Model(p).Update(pUpdate)
+	if result.Error != nil {
+		return errors.New("Error updating record")
+	}
+	return nil
+}
