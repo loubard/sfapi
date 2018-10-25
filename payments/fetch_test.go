@@ -7,13 +7,18 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFetch(t *testing.T) {
+	db, err := gorm.Open("sqlite3", ":memory:")
+	assert.NoError(t, err)
 	req := httptest.NewRequest("GET", "http://example.com/v1/payments/id", nil)
 	w := httptest.NewRecorder()
-	Fetch(w, req)
+
+	Fetch(db)(w, req)
 
 	resp := w.Result()
 	body, err := ioutil.ReadAll(resp.Body)
