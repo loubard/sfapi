@@ -23,7 +23,8 @@ func main() {
 
 	r := mux.NewRouter()
 	s := r.PathPrefix("/v1/payments").Subrouter()
-	s.HandleFunc("/", payments.List(db))
-	s.HandleFunc("/{id}", payments.Fetch(db))
+	s.HandleFunc("/", payments.List(db)).Methods("GET")
+	s.HandleFunc("/{id}", payments.Fetch(db)).Methods("GET")
+	s.HandleFunc("/{id}", payments.Delete(db)).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

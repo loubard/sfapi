@@ -69,3 +69,19 @@ func TestList(t *testing.T) {
 	json.Unmarshal(body, d)
 	assert.Equal(t, 2, len(*d.Data))
 }
+
+func TestDelete(t *testing.T) {
+	db, err := gorm.Open("sqlite3", ":memory:")
+	assert.NoError(t, err)
+	sql.Seed(db)
+
+	req := httptest.NewRequest("DELETE", "http://example.com/v1/payments/4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43", nil)
+	w := httptest.NewRecorder()
+
+	router := mux.NewRouter()
+	router.HandleFunc("/v1/payments/{id}", Delete(db))
+	router.ServeHTTP(w, req)
+
+	resp := w.Result()
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+}

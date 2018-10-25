@@ -22,21 +22,15 @@ func GetByID(db *gorm.DB, pID string) (*models.Payment, error) {
 // GetAll payments
 func GetAll(db *gorm.DB) *[]models.Payment {
 	var pp []models.Payment
-	// pp := &models.Payment{
-	// 	Attributes: &models.Attributes{
-	// 		BeneficiaryParty: &models.BeneficiaryParty{},
-	// 		ChargesInformation: &models.ChargesInformation{
-	// 			SenderCharges: []*models.SenderCharge{},
-	// 		},
-	// 		DebtorParty:  &models.DebtorParty{},
-	// 		Fx:           &models.Fx{},
-	// 		SponsorParty: &models.SponsorParty{},
-	// 	},
-	// }
-
-	db.Joins("INNER JOIN attributes ON attributes.id=payments.id").
-		Joins("INNER JOIN beneficiary_parties ON beneficiary_parties.id=attributes.beneficiary_party_id").
-		Find(&pp)
-
+	db.Find(&pp)
 	return &pp
+}
+
+// Delete a payment by id
+func Delete(db *gorm.DB, pID string) error {
+	result := db.Delete(models.Payment{}, "payments.payment = ?", pID)
+	if result.Error != nil {
+		return errors.New("Error deleting record")
+	}
+	return nil
 }

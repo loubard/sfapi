@@ -50,3 +50,19 @@ func List(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+// Delete a payment resource
+func Delete(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		err := sql.Delete(db, vars["id"])
+
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			return
+		}
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+		}
+	}
+}
