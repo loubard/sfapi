@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	db, err := gorm.Open("sqlite3", ":memory:")
+	db, err := gorm.Open("sqlite3", "db.sqlite")
 	if err != nil {
 		log.WithError(err).Fatal("Error opening the database")
 	}
