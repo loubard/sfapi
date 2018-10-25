@@ -16,7 +16,10 @@ func main() {
 	if err != nil {
 		log.WithError(err).Fatal("Error opening the database")
 	}
-	defer db.Close()
+	defer func() {
+		err := db.Close()
+		log.Fatal(err)
+	}()
 	db = db.Set("gorm:auto_preload", true)
 
 	sql.Seed(db)

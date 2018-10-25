@@ -21,7 +21,11 @@ func TestFetch(t *testing.T) {
 	assert.NoError(t, err)
 	sql.Seed(db)
 
-	req := httptest.NewRequest("GET", "http://example.com/v1/payments/4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43", nil)
+	req := httptest.NewRequest(
+		"GET",
+		"http://example.com/v1/payments/4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43",
+		nil,
+	)
 	w := httptest.NewRecorder()
 
 	router := mux.NewRouter()
@@ -76,7 +80,11 @@ func TestDelete(t *testing.T) {
 	assert.NoError(t, err)
 	sql.Seed(db)
 
-	req := httptest.NewRequest("DELETE", "http://example.com/v1/payments/4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43", nil)
+	req := httptest.NewRequest(
+		"DELETE",
+		"http://example.com/v1/payments/4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43",
+		nil,
+	)
 	w := httptest.NewRecorder()
 
 	router := mux.NewRouter()

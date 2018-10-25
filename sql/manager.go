@@ -35,6 +35,7 @@ func Delete(db *gorm.DB, pID string) error {
 	return nil
 }
 
+// Create a payment resource
 func Create(db *gorm.DB, p *models.Payment) error {
 	result := db.Create(p)
 	if result.Error != nil {
