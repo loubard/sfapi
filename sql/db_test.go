@@ -16,5 +16,5 @@ func TestSeed(t *testing.T) {
 	Seed(db)
 	var c int
 	db.Model(&models.Payment{}).Count(&c)
-	assert.Equal(t, 1, c)
+	assert.Equal(t, 2, c)
 }

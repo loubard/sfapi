@@ -30,10 +30,10 @@ type SenderCharge struct {
 // ChargesInformation holding information about receiver and sender
 type ChargesInformation struct {
 	gorm.Model
-	BearerCode              string         `json:"bearer_code"`
-	ReceiverChargesAmount   string         `json:"receiver_charges_amount"`
-	ReceiverChargesCurrency string         `json:"receiver_charges_currency"`
-	SenderCharges           []SenderCharge `json:"sender_charges"`
+	BearerCode              string          `json:"bearer_code"`
+	ReceiverChargesAmount   string          `json:"receiver_charges_amount"`
+	ReceiverChargesCurrency string          `json:"receiver_charges_currency"`
+	SenderCharges           []*SenderCharge `json:"sender_charges"`
 }
 
 // DebtorParty account and bank information
@@ -65,14 +65,14 @@ type SponsorParty struct {
 	BankIDCode    string `json:"bank_id_code" db:"bank_id_code"`
 }
 
-// Attributes holds the detail about the payment
+// Detail holds the detail about the payment
 type Attributes struct {
 	gorm.Model
 	Amount               string `json:"amount"`
 	Currency             string `json:"currency"`
 	EndToEndReference    string `json:"end_to_end_reference"`
 	NumericReference     string `json:"numeric_reference"`
-	PaymentID            string `json:"payment_id"`
+	Payment              string `json:"payment_id"`
 	PaymentPurpose       string `json:"payment_purpose"`
 	PaymentScheme        string `json:"payment_scheme"`
 	PaymentType          string `json:"payment_type"`
@@ -96,10 +96,10 @@ type Attributes struct {
 // Payment metadata
 type Payment struct {
 	gorm.Model
-	OrganisationID string `json:"organisation_id"`
-	Type           string `json:"type"`
-	Version        int    `json:"version"`
-	PaymentID      string `json:"id"`
+	Organisation string `json:"organisation_id"`
+	Type         string `json:"type"`
+	Version      int    `json:"version"`
+	Payment      string `json:"payment_id"`
 
 	Attributes   *Attributes `json:"attributes"`
 	AttributesID uint
