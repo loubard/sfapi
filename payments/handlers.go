@@ -2,6 +2,7 @@ package payments
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -61,8 +62,28 @@ func Delete(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadGateway)
 			return
 		}
+	}
+}
+
+// Create a payment resource
+func Create(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		requestBody, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		var p models.Payment
+		err = json.Unmarshal(requestBody, &p)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		err = sql.Create(db, &p)
 		if err != nil {
 			w.WriteHeader(http.StatusBadGateway)
+			return
 		}
+		w.WriteHeader(http.StatusCreated)
 	}
 }

@@ -34,3 +34,11 @@ func Delete(db *gorm.DB, pID string) error {
 	}
 	return nil
 }
+
+func Create(db *gorm.DB, p *models.Payment) error {
+	result := db.Create(p)
+	if result.Error != nil {
+		return errors.New("Error creating record")
+	}
+	return nil
+}

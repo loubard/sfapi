@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -84,4 +85,74 @@ func TestDelete(t *testing.T) {
 
 	resp := w.Result()
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
+}
+
+func TestCreate(t *testing.T) {
+	db, err := gorm.Open("sqlite3", ":memory:")
+	assert.NoError(t, err)
+	sql.Seed(db)
+
+	json := `{"payment_id":"42","attributes":{"amount":"100"}}`
+
+	req := httptest.NewRequest(
+		"POST",
+		"http://example.com/v1/payments/",
+		strings.NewReader(json),
+	)
+	w := httptest.NewRecorder()
+
+	router := mux.NewRouter()
+	router.HandleFunc("/v1/payments/", Create(db))
+	router.ServeHTTP(w, req)
+
+	resp := w.Result()
+	assert.Equal(t, http.StatusCreated, resp.StatusCode)
+	p := &models.Payment{}
+
+	db.Where("payments.payment = ?", "42").First(&p)
+	assert.Equal(t, "42", p.Payment)
+}
+
+func TestCreateBadJSON(t *testing.T) {
+	db, err := gorm.Open("sqlite3", ":memory:")
+	assert.NoError(t, err)
+	sql.Seed(db)
+
+	json := `{`
+
+	req := httptest.NewRequest(
+		"POST",
+		"http://example.com/v1/payments/",
+		strings.NewReader(json),
+	)
+	w := httptest.NewRecorder()
+
+	router := mux.NewRouter()
+	router.HandleFunc("/v1/payments/", Create(db))
+	router.ServeHTTP(w, req)
+
+	resp := w.Result()
+	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+}
+
+func TestCreateInvalid(t *testing.T) {
+	db, err := gorm.Open("sqlite3", ":memory:")
+	assert.NoError(t, err)
+	sql.Seed(db)
+
+	json := `{"payment_id": 42}`
+
+	req := httptest.NewRequest(
+		"POST",
+		"http://example.com/v1/payments/",
+		strings.NewReader(json),
+	)
+	w := httptest.NewRecorder()
+
+	router := mux.NewRouter()
+	router.HandleFunc("/v1/payments/", Create(db))
+	router.ServeHTTP(w, req)
+
+	resp := w.Result()
+	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 }
