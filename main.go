@@ -17,6 +17,7 @@ func main() {
 		log.WithError(err).Fatal("Error opening the database")
 	}
 	defer db.Close()
+	db = db.Set("gorm:auto_preload", true)
 
 	sql.Seed(db)
 
