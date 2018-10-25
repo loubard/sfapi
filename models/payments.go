@@ -1,7 +1,5 @@
 package models
 
-import "github.com/jinzhu/gorm"
-
 // FetchResponse holds one payment
 type FetchResponse struct {
 	Data *Payment `json:"data"`
@@ -14,7 +12,7 @@ type ListResponse struct {
 
 // BeneficiaryParty holds information about amount and currency for receiver
 type BeneficiaryParty struct {
-	gorm.Model
+	ID                int    `json:"-"`
 	AccountName       string `json:"account_name"`
 	AccountNumber     string `json:"account_number"`
 	AccountNumberCode string `json:"account_number_code"`
@@ -27,14 +25,14 @@ type BeneficiaryParty struct {
 
 // SenderCharge holds information about amount and currency for sender
 type SenderCharge struct {
-	gorm.Model
+	ID       int    `json:"-"`
 	Amount   string `json:"amount"`
 	Currency string `json:"currency"`
 }
 
 // ChargesInformation holding information about receiver and sender
 type ChargesInformation struct {
-	gorm.Model
+	ID                      int             `json:"-"`
 	BearerCode              string          `json:"bearer_code"`
 	ReceiverChargesAmount   string          `json:"receiver_charges_amount"`
 	ReceiverChargesCurrency string          `json:"receiver_charges_currency"`
@@ -43,7 +41,7 @@ type ChargesInformation struct {
 
 // DebtorParty account and bank information
 type DebtorParty struct {
-	gorm.Model
+	ID                int    `json:"-"`
 	AccountName       string `json:"account_name" db:"account_name"`
 	AccountNumber     string `json:"account_number" db:"account_number"`
 	AccountNumberCode string `json:"account_number_code" db:"account_number_code"`
@@ -55,7 +53,7 @@ type DebtorParty struct {
 
 // Fx information
 type Fx struct {
-	gorm.Model
+	ID                int    `json:"-"`
 	ContractReference string `json:"contract_reference" db:"contract_reference"`
 	ExchangeRate      string `json:"exchange_rate" db:"exchange_rate"`
 	OriginalAmount    string `json:"original_amount" db:"original_amount"`
@@ -64,7 +62,7 @@ type Fx struct {
 
 // SponsorParty information
 type SponsorParty struct {
-	gorm.Model
+	ID            int    `json:"-"`
 	AccountNumber string `json:"account_number" db:"account_number"`
 	BankID        string `json:"bank_id" db:"bank_id"`
 	BankIDCode    string `json:"bank_id_code" db:"bank_id_code"`
@@ -72,7 +70,7 @@ type SponsorParty struct {
 
 // Attributes holds the detail about the payment
 type Attributes struct {
-	gorm.Model
+	ID                   int    `json:"-"`
 	Amount               string `json:"amount"`
 	Currency             string `json:"currency"`
 	EndToEndReference    string `json:"end_to_end_reference"`
@@ -86,26 +84,26 @@ type Attributes struct {
 	SchemePaymentSubType string `json:"scheme_payment_sub_type"`
 	SchemePaymentType    string `json:"scheme_payment_type"`
 
-	BeneficiaryParty     *BeneficiaryParty `json:"beneficiary_party"`
-	BeneficiaryPartyID   uint
+	BeneficiaryParty     *BeneficiaryParty   `json:"beneficiary_party"`
+	BeneficiaryPartyID   uint                `json:"-"`
 	ChargesInformation   *ChargesInformation `json:"charges_information"`
-	ChargesInformationID uint
-	DebtorParty          *DebtorParty `json:"debtor_party"`
-	DebtorPartyID        uint
-	Fx                   *Fx `json:"fx"`
-	FxID                 uint
-	SponsorParty         *SponsorParty `json:"sponsor_party"`
-	SponsorPartyID       uint
+	ChargesInformationID uint                `json:"-"`
+	DebtorParty          *DebtorParty        `json:"debtor_party"`
+	DebtorPartyID        uint                `json:"-"`
+	Fx                   *Fx                 `json:"fx"`
+	FxID                 uint                `json:"-"`
+	SponsorParty         *SponsorParty       `json:"sponsor_party"`
+	SponsorPartyID       uint                `json:"-"`
 }
 
 // Payment metadata
 type Payment struct {
-	gorm.Model
+	ID           int    `json:"-"`
 	Organisation string `json:"organisation_id"`
 	Type         string `json:"type"`
 	Version      int    `json:"version"`
 	Payment      string `json:"payment_id"`
 
 	Attributes   *Attributes `json:"attributes"`
-	AttributesID uint
+	AttributesID uint        `json:"-"`
 }
