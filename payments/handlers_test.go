@@ -1,6 +1,7 @@
 package payments
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -9,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/loubard/sfapi/models"
 	"github.com/loubard/sfapi/sql"
 	"github.com/stretchr/testify/assert"
 )
@@ -43,4 +45,27 @@ func TestFetchNotFound(t *testing.T) {
 
 	resp := w.Result()
 	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
+}
+
+func TestList(t *testing.T) {
+	db, err := gorm.Open("sqlite3", ":memory:")
+	assert.NoError(t, err)
+	sql.Seed(db)
+
+	req := httptest.NewRequest("GET", "http://example.com/v1/payments/", nil)
+	w := httptest.NewRecorder()
+
+	router := mux.NewRouter()
+	router.HandleFunc("/v1/payments/", List(db))
+	router.ServeHTTP(w, req)
+
+	resp := w.Result()
+	body, err := ioutil.ReadAll(resp.Body)
+	assert.NoError(t, err)
+
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Contains(t, string(body), "{\"data\":[")
+	d := &models.ListResponse{}
+	json.Unmarshal(body, d)
+	assert.Equal(t, 2, len(*d.Data))
 }

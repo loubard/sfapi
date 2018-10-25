@@ -7,6 +7,11 @@ type FetchResponse struct {
 	Data *Payment `json:"data"`
 }
 
+// ListResponse holds one payment
+type ListResponse struct {
+	Data *[]Payment `json:"data"`
+}
+
 // BeneficiaryParty holds information about amount and currency for receiver
 type BeneficiaryParty struct {
 	gorm.Model

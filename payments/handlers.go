@@ -32,3 +32,21 @@ func Fetch(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+// List returns all payment resources
+func List(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		p := sql.GetAll(db)
+
+		d := models.ListResponse{Data: p}
+		j, err := json.Marshal(d)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			return
+		}
+		_, err = w.Write(j)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+		}
+	}
+}
